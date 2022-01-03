@@ -1649,7 +1649,7 @@ get_wheel_120_value(struct xf86libinput *driver_data,
 	}
 
 	angle = libinput_event_pointer_get_scroll_value_v120(event, axis);
-	return s->dist * angle/120;
+	return s->dist * angle/20;
 }
 #endif
 
