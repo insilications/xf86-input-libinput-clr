@@ -54,23 +54,29 @@ on the profiles and their behavior, see the libinput documentation.
 .BI "Option \*qAccelSpeed\*q \*q" float \*q
 Sets the pointer acceleration speed within the range [-1, 1].
 This only applies to the flat or adaptive profile.
-.BI "Option \*AccelPointsFallback\*q \*q" string \*q
-Sets the points of the Fallback acceleration function, (see the libinput documentation).
+.TP 7
+.BI "Option \*qAccelPointsFallback\*q \*q" string \*q
+.TQ
+.BI "Option \*qAccelPointsMotion\*q \*q" string \*q
+.TQ
+.BI "Option \*qAccelPointsScroll\*q \*q" string \*q
+Sets the points of the Fallback/Motion/Scroll acceleration functions.
 The string must be a space-separated list of floating point non-negative numbers, e.g.
 "0.0 1.0 2.4 2.5".
 This only applies to the custom profile.
-.BI "Option \*AccelStepFallback\*q \*q" float \*q
-Sets the step between the points of the Fallback acceleration function, (see the libinput documentation).
-When a step of 0.0 is provided, libinput's default Fallback acceleration function is used.
+See section
+.B CUSTOM ACCELERATION PROFILE
+.TP 7
+.BI "Option \*qAccelStepFallback\*q \*q" float \*q
+.TQ
+.BI "Option \*qAccelStepMotion\*q \*q" float \*q
+.TQ
+.BI "Option \*qAccelStepScroll\*q \*q" float \*q
+Sets the step between the points of the Fallback/Motion/Scroll acceleration functions.
+When a step of 0.0 is provided, libinput's Fallback acceleration function is used.
 This only applies to the custom profile.
-.BI "Option \*AccelPointsMotion\*q \*q" string \*q
-Equivalent to AccelPointsFallback but applies to the Motion acceleration function.
-.BI "Option \*AccelStepMotion\*q \*q" float \*q
-Equivalent to AccelStepFallback but applies to the Motion acceleration function.
-.BI "Option \*AccelPointsScroll\*q \*q" string \*q
-Equivalent to AccelPointsFallback but applies to the Scroll acceleration function.
-.BI "Option \*AccelStepScroll\*q \*q" float \*q
-Equivalent to AccelStepFallback but applies to the Scroll acceleration function.
+See section
+.B CUSTOM ACCELERATION PROFILE
 .TP 7
 .BI "Option \*qButtonMapping\*q \*q" string \*q
 Sets the logical button mapping for this device, see
@@ -247,15 +253,41 @@ on the device. The following properties are provided by the
 driver.
 .TP 7
 .BI "libinput Accel Profiles Available"
-2 boolean values (8 bit, 0 or 1), in order "adaptive", "flat".
+3 boolean values (8 bit, 0 or 1), in order "adaptive", "flat", "custom".
 Indicates which acceleration profiles are available on this device.
 .TP 7
 .BI "libinput Accel Profile Enabled"
-2 boolean values (8 bit, 0 or 1), in order "adaptive", "flat".
+3 boolean values (8 bit, 0 or 1), in order "adaptive", "flat", "custom".
 Indicates which acceleration profile is currently enabled on this device.
 .TP 7
 .BI "libinput Accel Speed"
-1 32-bit float value, defines the pointer speed. Value range -1, 1
+1 32-bit float value, defines the pointer speed. Value range -1, 1.
+This only applies to the flat or adaptive profile.
+.TP 7
+.BI "libinput Accel Custom Fallback Points"
+.TQ
+.BI "libinput Accel Custom Motion Points"
+.TQ
+.BI "libinput Accel Custom Scroll Points"
+A space-separated list of 32-bit floating point non-negative numbers, e.g.
+"0.0 1.0 2.4 2.5".
+Sets the points of the Fallback/Motion/Scroll acceleration functions.
+This only applies to the custom profile.
+See section
+.B CUSTOM ACCELERATION PROFILE
+.TP 7
+.BI "libinput Accel Custom Fallback Step"
+.TQ
+.BI "libinput Accel Custom Motion Step"
+.TQ
+.BI "libinput Accel Custom Scroll Step"
+1 32-bit float value, sets the step between the points of the
+Fallback/Motion/Scroll acceleration functions.
+When a step of 0.0 is provided, libinput's Fallback acceleration
+function is used.
+This only applies to the custom profile.
+See section
+.B CUSTOM ACCELERATION PROFILE
 .TP 7
 .BI "libinput Button Scrolling Button"
 1 32-bit value. Sets the button number to use for button scrolling. This
@@ -449,6 +481,35 @@ libinput provides scroll data in pixels. The \fBScrollPixelDistance\fR
 option defines the amount of movement equivalent to one wheel click. For
 example, a value of 50 means the user has to move a finger by 50 pixels to
 generate one logical click event and each pixel is 1/50th of a wheel click.
+
+.SH CUSTOM ACCELERATION PROFILE
+The custom pointer acceleration profile gives users full control over the
+acceleration behavior at different speeds. libinput exposes an acceleration
+function f(x) where the x-axis is the device speed in device units per millisecond
+and the y-axis is the pointer speed.
+.PP
+The custom acceleration function is defined using n points which are spaced
+uniformly along the x-axis, starting from 0 and continuing in constant steps.
+Thus the points defining the custom function are:
+.EX
+(0 * step, f[0]), (1 * step, f[1]), ..., ((n-1) * step, f[n-1])
+.EE
+When a velocity value does not lie exactly on those points,
+a linear interpolation/extrapolation of the two closest points will be calculated.
+.PP
+There are 3 custom acceleration function, which are used for different movement types:
+.TS
+tab(;) allbox;
+l l l.
+Movement type; Uses; supported by
+Fallback; Catch-all default movement type; All devices
+Motion; Used for pointer motion; All devices
+Scroll; Used for scroll movement; Mouse, Touchpad
+.TE
+.PP
+See libinput library documentation of more details:
+https://wayland.freedesktop.org/libinput/doc/latest/pointer-acceleration.html#the-custom-acceleration-profile
+
 .SH BUGS
 This driver does not work with \fBOption \*qDevice\*q\fR set to an event
 node in \fI/dev/input/by-id\fR and \fI/dev/input/by-path\fR. This can be
