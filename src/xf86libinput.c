@@ -732,7 +732,7 @@ LibinputApplyConfigLeftHanded(DeviceIntPtr dev,
 {
 	InputInfoPtr pInfo = dev->public.devicePrivate;
 
-	if (!subdevice_has_capabilities(dev, CAP_POINTER|CAP_TABLET))
+	if (!subdevice_has_capabilities(dev, CAP_POINTER|CAP_TABLET|CAP_TABLET_TOOL))
 		return;
 
 	if (libinput_device_config_left_handed_is_available(device) &&
@@ -5728,7 +5728,7 @@ LibinputInitLeftHandedProperty(DeviceIntPtr dev,
 {
 	BOOL left_handed = driver_data->options.left_handed;
 
-	if (!subdevice_has_capabilities(dev, CAP_POINTER|CAP_TABLET))
+	if (!subdevice_has_capabilities(dev, CAP_POINTER|CAP_TABLET|CAP_TABLET_TOOL))
 		return;
 
 	if (!libinput_device_config_left_handed_is_available(device) ||
