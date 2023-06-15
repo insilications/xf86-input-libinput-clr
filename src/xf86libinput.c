@@ -256,6 +256,7 @@ btn_linux2xorg(unsigned int b)
 	/* tablet button range */
 	case BTN_STYLUS: button = 2; break;
 	case BTN_STYLUS2: button = 3; break;
+	case BTN_STYLUS3: button = 8; break;
 	default:
 		button = 8 + b - BTN_SIDE;
 		break;
