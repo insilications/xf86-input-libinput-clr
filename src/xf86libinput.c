@@ -1500,7 +1500,7 @@ swap_registered_device(InputInfoPtr pInfo)
 		return;
 
 	next = xf86FirstLocalDevice();
-	while (next == pInfo || !is_libinput_device(next))
+	while (next && (next == pInfo || !is_libinput_device(next)))
 		next = next->next;
 
 	input_lock();
