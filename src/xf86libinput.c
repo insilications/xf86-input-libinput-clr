@@ -1505,7 +1505,8 @@ swap_registered_device(InputInfoPtr pInfo)
 
 	input_lock();
 	xf86RemoveEnabledDevice(pInfo);
-	xf86AddEnabledDevice(next);
+	if (next)
+		xf86AddEnabledDevice(next);
 	driver_context.registered_InputInfoPtr = next;
 	input_unlock();
 }
